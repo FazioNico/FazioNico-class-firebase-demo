@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <!--
+      Need a visual blank slate?
+      Remove all code in `styles.css`!
+    -->
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <div></div>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js';
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        onAuthStateChanged,
+        signOut,
+        signInAnonymously,
+      } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js';
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: 'AIzaSyDaGZqrBrZdjkgtfAlsGmOPEN96MoopBrM',
+        authDomain: 'demojs24.firebaseapp.com',
+        databaseURL:
+          'https://demojs24-default-rtdb.europe-west1.firebasedatabase.app',
+        projectId: 'demojs24',
+        storageBucket: 'demojs24.appspot.com',
+        messagingSenderId: '351409963491',
+        appId: '1:351409963491:web:2ee1d2cb34a139f66e20d6',
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      // init Auth Service
+      const auth = getAuth(app);
+      // init auth provider
+      const provider = new GoogleAuthProvider();
+      const login = () => {
+        signInWithPopup(auth, provider)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log('error: ', error);
+          });
+      };
+      const loginAno = () => {
+        signInAnonymously(auth);
+      };
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          new WelcomePage(document.querySelector('div'));
+        } else {
+          new LoginPage(document.querySelector('div'));
+        }
+      });
+
+      class WelcomePage {
+        constructor(baliseHTML) {
+          this.root = baliseHTML;
+
+          this.initUI();
+          this.initEvents();
+        }
+
+        initUI() {
+          this.root.innerHTML = `
+            <h1>Hello</h1>
+            <button>logout</button>
+          `;
+        }
+
+        initEvents() {
+          this.root.querySelector('button').addEventListener('click', () => {
+            signOut(auth);
+          });
+        }
+      }
+
+      class LoginPage {
+        constructor(baliseHTML) {
+          this.root = baliseHTML;
+
+          this.initUI();
+          this.initEvents();
+        }
+
+        initUI() {
+          this.root.innerHTML = `<button>login</button>`;
+        }
+
+        initEvents() {
+          this.root.querySelector('button').addEventListener('click', () => {
+            login();
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
